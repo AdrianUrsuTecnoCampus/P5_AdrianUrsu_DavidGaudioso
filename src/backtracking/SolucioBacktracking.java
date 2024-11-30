@@ -7,6 +7,9 @@ public class SolucioBacktracking {
 	/* TODO
 	 * cal definir els atributs necessaris
 	 */
+
+	private char[][] taullel;
+
 	private final Encreuades repte;
 
 	
