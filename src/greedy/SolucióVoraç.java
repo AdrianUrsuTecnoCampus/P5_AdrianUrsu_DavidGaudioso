@@ -38,7 +38,7 @@ public class SolucióVoraç {
      * podeu definir els mètodes privats que vulgueu
      */
 
-    private boolean seleccionar(char[][] paraules, PosicioInicial pos){
+    private boolean seleccionar(char[][] paraules, PosicioInicial pos){ //TODO
 
 
         if(!taulaempty(paraules)) {
@@ -51,15 +51,15 @@ public class SolucióVoraç {
 
                 for (int i = 0; i < paraules.length; i++) {
                     for (int j = 0; j < paraules[i].length; j++) {
-                        paraules[i][j] = ;
+                        if(laMillorParaula(paraules,pos) != null) {
+                            char[] paraula = paraules.getItem(i);
+                            char lletra = paraula[i];
+                            paraules[i][j] = lletra;
+                        }
                     }
                 }
-
             }
-
-
         }
-
     }
 
     private boolean taulaempty(char[][] paraules) {
@@ -94,7 +94,66 @@ public class SolucióVoraç {
 
     }
 
-    private char letraitem(char item){
-        
+    private char[] laMillorParaula(char[][] paraules, PosicioInicial pos){
+
+        char[] millor = {'0'};
+        int capacitat = pos.getLength();
+        //List<char[]> candidats = new ArrayList<char[]>();
+        int cont = 0;
+
+        //Afegim les paraules que hi poden caber dins de la posició
+        for (int i = 0; i < paraules.length; i++) {
+            char[] possible = paraules[i];
+            for (int j = 0; j < paraules[i].length; j++) {
+                if(paraules[i][j] != ' '){
+                    cont++;
+
+                    //Ja ha arribat a formar una paraula que hi pot caber dins de l'ubicació
+                    if(cont == capacitat){
+                        //Mirem si és millor o no la possible candidata
+                        //candidats.add(paraules[i]);
+                        if(puntuacioParaula(millor)<puntuacioParaula(possible)){
+                            millor = possible;
+                        }
+
+                    }
+                }
+                else {
+                    j = paraules[i].length;
+                }
+
+            }
+            cont = 0;
+        }
+
+
+        /*
+        //Quina paraula és la millor (major puntuació)
+        int puntuacio = 0;
+        boolean trobat = false;
+        for(int i = 0; i < candidats.size(); i++) {
+
+            char[] best = candidats.get(i);
+            if(puntuacioParaula(millor)<puntuacioParaula(best)){
+                millor = best;
+            }
+
+        }
+
+         */
+
+        return millor;
     }
+
+    private int puntuacioParaula(char[] paraula) {
+        int total = 0;
+        for (int i = 0; i < paraula.length; i++) {
+            int valor = paraula[i];
+            total += valor;
+        }
+
+        return total;
+    }
+
+
 }
