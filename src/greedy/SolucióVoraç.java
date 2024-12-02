@@ -52,9 +52,9 @@ public class SolucióVoraç {
                 for (int i = 0; i < paraules.length; i++) {
                     for (int j = 0; j < paraules[i].length; j++) {
                         if(laMillorParaula(paraules,pos) != null) {
-                            char[] paraula = paraules.getItem(i);
-                            char lletra = paraula[i];
-                            paraules[i][j] = lletra;
+                            //char[] paraula = paraules.getItem(i);
+                            //char lletra = paraula[i];
+                            //paraules[i][j] = lletra;
                         }
                     }
                 }
@@ -154,6 +154,8 @@ public class SolucióVoraç {
 
         return total;
     }
+
+
 
 
 }
