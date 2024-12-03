@@ -60,6 +60,7 @@ public class SolucióVoraç {
                 }
             }
         }
+        return false;
     }
 
     private boolean taulaempty(char[][] paraules) {

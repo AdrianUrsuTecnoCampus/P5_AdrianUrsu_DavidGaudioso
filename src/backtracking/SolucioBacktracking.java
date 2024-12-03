@@ -2,6 +2,8 @@ package backtracking;
 import estructura.Encreuades;
 import estructura.PosicioInicial;
 
+import java.util.List;
+
 public class SolucioBacktracking {
 
 	/* TODO
@@ -9,7 +11,8 @@ public class SolucioBacktracking {
 	 */
 
 	private char[][] taulellSol;
-	private char[][] taulell;
+	private char[][] taulellMillor;
+	private boolean[] marcades;
 
 	private final Encreuades repte;
 
@@ -19,7 +22,7 @@ public class SolucioBacktracking {
 	}
 
 	public char[][] getMillorSolucio() {
-		return null; //TODO
+		return this.taulellMillor;
 	}
 
 	public Runnable start(boolean optim)
@@ -28,7 +31,8 @@ public class SolucioBacktracking {
 		 * cal inicialitzar els atributs necessaris
 		 */
 
-		taulell = repte.getPuzzle();
+		taulellSol = repte.getPuzzle();
+		marcades = new boolean[repte.getItemsSize()];
 
 
 
@@ -65,15 +69,66 @@ public class SolucioBacktracking {
 		}
 		return trobada;
 	}
-	/* TODO
-	 * Esquema recursiu que busca totes les solucions
-	 * no cal utilitzar una variable booleana per aturar perquè busquem totes les solucions
-	 * cal guardar una COPIA de la millor solució a una variable
-	 */
-	private void backMillorSolucio(int indexUbicacio) {
 
+
+	private void backMillorSolucio(int indexUbicacio) {
+		/* TODO
+		 * Esquema recursiu que busca totes les solucions
+		 * no cal utilitzar una variable booleana per aturar perquè busquem totes les solucions
+		 * cal guardar una COPIA de la millor solució a una variable
+		 */
+		/*
+		inicialitzem_valors_domini_decisio_nivell_k();
+		agafar_el_primer_valor();
+		while (quedin_valors()) { // Recorregut de tot l’espai de cerca
+			if (valor_acceptable()) { // No viola les restriccions
+				anotar_el_valor_a_la_solucio();
+				if (solucio_final()) {
+					if (millor_solucio())
+						Millor = TS;
+				} else if (solucio_completable()) {
+					BackMillorSolucio(TS, k + 1, Millor);
+				}
+				desanotar_el_valor();
+			} // fi if
+			agafar_seguent_valor();
+			// Passem al següent germà a la dreta
+			} // fi while
+		} // fi procediment
+		 */
+
+		int indexItem = 0;
+
+		while (quedin_valors()) { // Recorregut de tot l’espai de cerca
+			if (acceptable(indexUbicacio,indexItem)) { // No viola les restriccions
+				anotarASolucio(indexUbicacio,indexItem);
+				if (esSolucio(0)) {
+					if(calcularFuncioObjectiu(this.taulellSol) > calcularFuncioObjectiu(this.taulellMillor))
+						guardarMillorSolucio();
+				} else if (completable()) {
+					backMillorSolucio(indexUbicacio + 1);
+				}
+				desanotarDeSolucio(indexUbicacio, indexItem);
+			} // fi if
+			indexItem++;
+		} // fi while
+	} // fi procediment
+
+
+	private boolean quedin_valors() {
+		// minetras que alguna palabra marcada este false
+		// se podria ir haciendo el bucle
+		for (int i = 0; i< marcades.length; i++){
+			if(!marcades[i]){
+				return true;
+			}
+		}
+		return false;
 	}
-	
+
+
+	private boolean paraulaUtilitzada(int indexItem) {return marcades[indexItem];}
+
 	private boolean acceptable(int indexUbicacio, int indexItem) {
 
 		/* Quan la palabra a posar no estigui posada en la taula i es pugui posar
@@ -100,7 +155,8 @@ public class SolucioBacktracking {
 		return false; //TODO
 	}
 
-	//Mira si no hi ca cap
+	//Mira si no hi ca cap altre lletra en la direcció donada
+	// ( això vol dir que hi ha una posicióInicial que comença en la paraula donada i per tant aquesta no s'esborra)
 	private boolean esPotPosar(int fila, int col, int len, char dir, char[] paraula) {
 
 		boolean espotposar = true;
@@ -108,24 +164,24 @@ public class SolucioBacktracking {
 		switch (dir) {
 			case 'V':
 				for (int i = 0; (len-i)!=0 && espotposar; i++) {
-					if(taulell[fila+i][col] != ' '){
+					if(taulellSol[fila+i][col] != ' '){
 						//char lletra = paraula[i];
-						if(taulell[fila+i][col] != paraula[i])
+						if(taulellSol[fila+i][col] != paraula[i])
 							espotposar = false;
 					}
 				}
 				return espotposar;
 			default:
 				for (int j = 0; (len-j)!=0 && espotposar; j++) {
-					if (taulell[fila][col + j] != ' ') {
-						if(taulell[fila][col+j] != paraula[j])
+					if (taulellSol[fila][col + j] != ' ') {
+						if(taulellSol[fila][col+j] != paraula[j])
 							espotposar = false;
 					}
 				}
 				return espotposar;
 		}
 	}
-	
+
 	private void anotarASolucio(int indexUbicacio, int indexItem) {
 
 		PosicioInicial ubi = this.repte.getEspaisDisponibles().get(indexUbicacio);
@@ -141,7 +197,7 @@ public class SolucioBacktracking {
 			}
 		}
 	}
-	
+
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
 
 		PosicioInicial ubi = this.repte.getEspaisDisponibles().get(indexUbicacio);
@@ -206,22 +262,68 @@ public class SolucioBacktracking {
 		return espot;
 
 	}
-	
+
 	private boolean esSolucio(int index) {
-		return false; //TODO
+		/*
+		És solució quan totes les ubicacions estiguin plenes i
+		no hi hagin paraules per agafar.
+		(Hem arribat a una fulla de l’espai de cerca.)
+		 */
+
+		for(int i = 0; i< taulellSol.length; i++) {
+			for(int j = 0; j<taulellSol[i].length; j++) {
+				if(taulellSol[i][j] != ' '){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
-	
+
+	private boolean completable() {
+		for(int i = 0; i< taulellSol.length; i++) {
+			for(int j = 0; j<taulellSol[i].length; j++) {
+				if(taulellSol[i][j] == ' '){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	private int calcularFuncioObjectiu(char[][] matriu) {
-		return 0; //TODO
+
+		int total = 0;
+
+		for(int i = 0; i< matriu.length; i++) {
+			for(int j = 0; j<matriu[i].length; j++) {
+				if(matriu[i][j] != '▪'){
+					char a = matriu[i][j];
+                    total += a;
+				}
+			}
+		}
+
+		return total;
 	}
-	
+
 	private void guardarMillorSolucio() {
-		// TODO - cal guardar un clone
+
+		for(int i = 0; i<this.taulellSol.length; i++) {
+			this.taulellMillor[i] = this.taulellSol[i].clone();
+		}
+
 	}
-	
+
 	public String toString() {
 		String resultat = "";
-		//TODO
+
+		for(int i = 0; i<this.taulellSol.length; i++) {
+			System.out.println("");
+			for(int j = 0; j<this.taulellSol[i].length; j++) {
+				resultat += this.taulellSol[i][j] + "	";
+			}
+		}
 		return resultat;
 	}
 
