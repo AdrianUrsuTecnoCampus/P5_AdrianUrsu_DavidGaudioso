@@ -32,9 +32,15 @@ public class SolucioBacktracking {
 		 */
 
 		taulellSol = repte.getPuzzle();
-		marcades = new boolean[repte.getItemsSize()];
+		this.taulellMillor = new char[2][2];
+		this.marcades = new boolean[repte.getItemsSize()];
 
-
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < 2; j++) {
+				this.taulellSol[i][j] = 'A';
+				this.taulellMillor[i][j] = 'A';
+			}
+		}
 
 		if(!optim) {
 			if (!this.backUnaSolucio(0))
