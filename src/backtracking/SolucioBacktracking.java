@@ -32,15 +32,10 @@ public class SolucioBacktracking {
 		 */
 
 		taulellSol = repte.getPuzzle();
-		this.taulellMillor = new char[2][2];
+		this.taulellMillor = new char[taulellSol.length][taulellSol[0].length];
 		this.marcades = new boolean[repte.getItemsSize()];
 
-		for (int i = 0; i < 2; i++) {
-			for (int j = 0; j < 2; j++) {
-				this.taulellSol[i][j] = 'A';
-				this.taulellMillor[i][j] = 'A';
-			}
-		}
+		guardarMillorSolucio();
 
 		if(!optim) {
 			if (!this.backUnaSolucio(0))
@@ -120,6 +115,17 @@ public class SolucioBacktracking {
 		} // fi while
 	} // fi procediment
 
+
+	private boolean coordenadesValides(int fila, int col, int llargada, char direccio) {
+		boolean esValid = true;
+		if (direccio == 'V') {
+			esValid = fila >= 0 && fila + llargada <= taulellSol.length && col >= 0 && col < taulellSol[0].length;
+		} else if (direccio == 'H') {
+			esValid = fila >= 0 && fila < taulellSol.length && col >= 0 && col + llargada <= taulellSol[0].length;
+		}
+		System.out.println("Validando coordenadas: (" + fila + ", " + col + "), llargada=" + llargada + ", direccio=" + direccio + " -> " + esValid);
+		return esValid;
+	}
 
 	private boolean quedin_valors() {
 		// minetras que alguna palabra marcada este false
@@ -282,7 +288,7 @@ public class SolucioBacktracking {
 
 		for(int i = 0; i< taulellSol.length; i++) {
 			for(int j = 0; j<taulellSol[i].length; j++) {
-				if(taulellSol[i][j] != ' '){
+				if(taulellSol[i][j] == ' '){
 					return false;
 				}
 			}
