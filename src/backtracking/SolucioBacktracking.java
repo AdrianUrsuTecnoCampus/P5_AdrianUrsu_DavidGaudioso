@@ -202,6 +202,8 @@ public class SolucioBacktracking {
 				taulellSol[ubi.getInitRow()][ubi.getInitCol() + j] = palabra[j];
 			}
 		}
+
+		marcades[indexItem] = true;
 	}
 
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
