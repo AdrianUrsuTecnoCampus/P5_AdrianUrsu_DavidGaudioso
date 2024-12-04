@@ -226,6 +226,8 @@ public class SolucioBacktracking {
 			}
 		}
 
+		marcades[indexItem] = false;
+
 
 	}
 
