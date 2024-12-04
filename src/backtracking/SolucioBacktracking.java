@@ -2,6 +2,9 @@ package backtracking;
 import estructura.Encreuades;
 import estructura.PosicioInicial;
 
+
+
+import java.util.Arrays;
 import java.util.List;
 
 public class SolucioBacktracking {
@@ -50,6 +53,7 @@ public class SolucioBacktracking {
 	 * utilitzem una variable booleana (que retornem)
 	 * per aturar el recorregut quan haguem trobat una solució
 	 */
+
 	private boolean backUnaSolucio(int indexUbicacio) {
 		boolean trobada = false;
 		// iterem sobre els possibles elements
@@ -71,6 +75,36 @@ public class SolucioBacktracking {
 		return trobada;
 	}
 
+	/*
+	private boolean backUnaSolucio(int indexUbicacio) {
+		boolean trobada = false;
+		for (int indexItem = 0; indexItem < this.repte.getItemsSize() && !trobada; indexItem++) {
+			if (acceptable(indexUbicacio, indexItem)) {
+				System.out.println("Acceptable: indexUbicacio=" + indexUbicacio + ", indexItem=" + indexItem);
+				// Place the item at the current location
+				anotarASolucio(indexUbicacio, indexItem);
+				System.out.println("Item placed: " + Arrays.toString(this.repte.getItem(indexItem)));
+
+				if (esSolucio(indexUbicacio)) {
+					System.out.println("Solution found at indexUbicacio=" + indexUbicacio);
+					return true;
+				} else {
+					trobada = this.backUnaSolucio(indexUbicacio + 1);
+				}
+
+				if (!trobada) {
+					// Remove the item from the current location
+					desanotarDeSolucio(indexUbicacio, indexItem);
+					System.out.println("Item removed: " + Arrays.toString(this.repte.getItem(indexItem)));
+				}
+			} else {
+				System.out.println("Not acceptable: indexUbicacio=" + indexUbicacio + ", indexItem=" + indexItem);
+			}
+		}
+		return trobada;
+	}
+
+	 */
 
 	private void backMillorSolucio(int indexUbicacio) {
 		/* TODO
@@ -116,16 +150,7 @@ public class SolucioBacktracking {
 	} // fi procediment
 
 
-	private boolean coordenadesValides(int fila, int col, int llargada, char direccio) {
-		boolean esValid = true;
-		if (direccio == 'V') {
-			esValid = fila >= 0 && fila + llargada <= taulellSol.length && col >= 0 && col < taulellSol[0].length;
-		} else if (direccio == 'H') {
-			esValid = fila >= 0 && fila < taulellSol.length && col >= 0 && col + llargada <= taulellSol[0].length;
-		}
-		System.out.println("Validando coordenadas: (" + fila + ", " + col + "), llargada=" + llargada + ", direccio=" + direccio + " -> " + esValid);
-		return esValid;
-	}
+
 
 	private boolean quedin_valors() {
 		// minetras que alguna palabra marcada este false
@@ -161,8 +186,6 @@ public class SolucioBacktracking {
 			else{
 				return esPotPosar(fila,col,llargada,'H',paraula);
 			}
-
-
 		}
 		return false; //TODO
 	}
