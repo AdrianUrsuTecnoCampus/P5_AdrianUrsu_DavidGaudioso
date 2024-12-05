@@ -154,6 +154,7 @@ public class SolucioBacktracking {
 
 	private void backMillorSolucio(int indexUbicacio) {
 		System.out.println("backMillorSolucio called with indexUbicacio: " + indexUbicacio);
+		printTable(taulellSol);
 
 		int indexItem = 0;
 
@@ -164,6 +165,7 @@ public class SolucioBacktracking {
 					System.out.println("Item " + indexItem + " is acceptable at indexUbicacio: " + indexUbicacio);
 					anotarASolucio(indexUbicacio, indexItem);
 					System.out.println("Item " + indexItem + " anotated at indexUbicacio: " + indexUbicacio);
+					printTable(taulellSol);
 
 					if (esSolucio(0)) {
 						// Handle solution found
@@ -173,6 +175,7 @@ public class SolucioBacktracking {
 					}
 					desanotarDeSolucio(indexUbicacio, indexItem);
 					System.out.println("Item " + indexItem + " desanotated from indexUbicacio: " + indexUbicacio);
+					printTable(taulellSol);
 				} else {
 					System.out.println("Item " + indexItem + " is not acceptable at indexUbicacio: " + indexUbicacio);
 				}
@@ -183,6 +186,12 @@ public class SolucioBacktracking {
 			indexItem++;
 		}
 		System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio);
+	}
+
+	private void printTable(char[][] table) {
+		for (char[] row : table) {
+			System.out.println(Arrays.toString(row));
+		}
 	}
 	private boolean quedin_valors() {
 		// minetras que alguna palabra marcada este false
