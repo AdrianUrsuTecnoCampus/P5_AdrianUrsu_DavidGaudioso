@@ -261,7 +261,8 @@ public class SolucioBacktracking {
 
 
 	}
-
+	//TODO EL QUE NO VA
+	/*
 	private boolean esPotEliminar(PosicioInicial ubi) {
 
 		boolean espot = false;
@@ -301,7 +302,43 @@ public class SolucioBacktracking {
 		return espot;
 
 	}
+	*/
+	// TODO EL QUE VA
+	private boolean esPotEliminar(PosicioInicial ubi) {
+		boolean espot = true;
 
+		if (ubi.getDireccio() == 'V') {
+			for (int i = 0; i < ubi.getLength(); i++) {
+				int fila = ubi.getInitRow() + i;
+				if (ubi.getInitCol() - 1 >= 0) {
+					if (taulellSol[fila][ubi.getInitCol() - 1] != ' ' && taulellSol[fila][ubi.getInitCol() - 1] != '▪') {
+						espot = false;
+					}
+				}
+				if (ubi.getInitCol() + 1 < taulellSol[0].length) {
+					if (taulellSol[fila][ubi.getInitCol() + 1] != ' ' && taulellSol[fila][ubi.getInitCol() + 1] != '▪') {
+						espot = false;
+					}
+				}
+			}
+		} else {
+			for (int j = 0; j < ubi.getLength(); j++) {
+				int col = ubi.getInitCol() + j;
+				if (ubi.getInitRow() - 1 >= 0) {
+					if (taulellSol[ubi.getInitRow() - 1][col] != ' ' && taulellSol[ubi.getInitRow() - 1][col] != '▪') {
+						espot = false;
+					}
+				}
+				if (ubi.getInitRow() + 1 < taulellSol.length) {
+					if (taulellSol[ubi.getInitRow() + 1][col] != ' ' && taulellSol[ubi.getInitRow() + 1][col] != '▪') {
+						espot = false;
+					}
+				}
+			}
+		}
+
+		return espot;
+	}
 	private boolean esSolucio(int index) {
 		/*
 		És solució quan totes les ubicacions estiguin plenes i
