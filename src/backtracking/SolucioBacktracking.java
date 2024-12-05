@@ -106,6 +106,7 @@ public class SolucioBacktracking {
 
 	 */
 
+	/*
 	private void backMillorSolucio(int indexUbicacio) {
 		/* TODO
 		 * Esquema recursiu que busca totes les solucions
@@ -130,7 +131,7 @@ public class SolucioBacktracking {
 			// Passem al següent germà a la dreta
 			} // fi while
 		} // fi procediment
-		 */
+
 
 		int indexItem = 0;
 
@@ -149,9 +150,40 @@ public class SolucioBacktracking {
 		} // fi while
 	} // fi procediment
 
+	*/
 
+	private void backMillorSolucio(int indexUbicacio) {
+		System.out.println("backMillorSolucio called with indexUbicacio: " + indexUbicacio);
 
+		int indexItem = 0;
 
+		while (quedin_valors()) { // Recorregut de tot l’espai de cerca
+			System.out.println("Checking indexItem: " + indexItem);
+			if (indexItem < repte.getItemsSize()) {
+				if (acceptable(indexUbicacio, indexItem)) { // No viola les restriccions
+					System.out.println("Item " + indexItem + " is acceptable at indexUbicacio: " + indexUbicacio);
+					anotarASolucio(indexUbicacio, indexItem);
+					System.out.println("Item " + indexItem + " anotated at indexUbicacio: " + indexUbicacio);
+
+					if (esSolucio(0)) {
+						// Handle solution found
+					} else if (completable()) {
+						System.out.println("Solution is completable, going deeper");
+						backMillorSolucio(indexUbicacio + 1);
+					}
+					desanotarDeSolucio(indexUbicacio, indexItem);
+					System.out.println("Item " + indexItem + " desanotated from indexUbicacio: " + indexUbicacio);
+				} else {
+					System.out.println("Item " + indexItem + " is not acceptable at indexUbicacio: " + indexUbicacio);
+				}
+			} else {
+				System.out.println("Index out of bounds: indexUbicacio=" + indexUbicacio + ", indexItem=" + indexItem);
+				break; // Exit the loop if indexItem is out of bounds
+			}
+			indexItem++;
+		}
+		System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio);
+	}
 	private boolean quedin_valors() {
 		// minetras que alguna palabra marcada este false
 		// se podria ir haciendo el bucle
