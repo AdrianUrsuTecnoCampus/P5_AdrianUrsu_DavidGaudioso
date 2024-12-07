@@ -19,7 +19,7 @@ public class SolucioBacktracking {
 
 	private final Encreuades repte;
 
-	
+
 	public SolucioBacktracking(Encreuades repte) {
 		this.repte = repte;
 	}
@@ -75,124 +75,29 @@ public class SolucioBacktracking {
 		return trobada;
 	}
 
-	/*
-	private boolean backUnaSolucio(int indexUbicacio) {
-		boolean trobada = false;
-		for (int indexItem = 0; indexItem < this.repte.getItemsSize() && !trobada; indexItem++) {
-			if (acceptable(indexUbicacio, indexItem)) {
-				System.out.println("Acceptable: indexUbicacio=" + indexUbicacio + ", indexItem=" + indexItem);
-				// Place the item at the current location
-				anotarASolucio(indexUbicacio, indexItem);
-				System.out.println("Item placed: " + Arrays.toString(this.repte.getItem(indexItem)));
-
-				if (esSolucio(indexUbicacio)) {
-					System.out.println("Solution found at indexUbicacio=" + indexUbicacio);
-					return true;
-				} else {
-					trobada = this.backUnaSolucio(indexUbicacio + 1);
-				}
-
-				if (!trobada) {
-					// Remove the item from the current location
-					desanotarDeSolucio(indexUbicacio, indexItem);
-					System.out.println("Item removed: " + Arrays.toString(this.repte.getItem(indexItem)));
-				}
-			} else {
-				System.out.println("Not acceptable: indexUbicacio=" + indexUbicacio + ", indexItem=" + indexItem);
-			}
-		}
-		return trobada;
-	}
-
-	 */
-
-	/*
 	private void backMillorSolucio(int indexUbicacio) {
-		/* TODO
-		 * Esquema recursiu que busca totes les solucions
-		 * no cal utilitzar una variable booleana per aturar perquè busquem totes les solucions
-		 * cal guardar una COPIA de la millor solució a una variable
-		 */
-		/*
-		inicialitzem_valors_domini_decisio_nivell_k();
-		agafar_el_primer_valor();
-		while (quedin_valors()) { // Recorregut de tot l’espai de cerca
-			if (valor_acceptable()) { // No viola les restriccions
-				anotar_el_valor_a_la_solucio();
-				if (solucio_final()) {
-					if (millor_solucio())
-						Millor = TS;
-				} else if (solucio_completable()) {
-					BackMillorSolucio(TS, k + 1, Millor);
-				}
-				desanotar_el_valor();
-			} // fi if
-			agafar_seguent_valor();
-			// Passem al següent germà a la dreta
-			} // fi while
-		} // fi procediment
-
 
 		int indexItem = 0;
 
-		while (quedin_valors()) { // Recorregut de tot l’espai de cerca
-			if (acceptable(indexUbicacio,indexItem)) { // No viola les restriccions
-				anotarASolucio(indexUbicacio,indexItem);
-				if (esSolucio(0)) {
-					if(calcularFuncioObjectiu(this.taulellSol) > calcularFuncioObjectiu(this.taulellMillor))
-						guardarMillorSolucio();
-				} else if (completable()) {
-					backMillorSolucio(indexUbicacio + 1);
-				}
-				desanotarDeSolucio(indexUbicacio, indexItem);
-			} // fi if
-			indexItem++;
-		} // fi while
-	} // fi procediment
-
-	*/
-
-	private void backMillorSolucio(int indexUbicacio) {
-		System.out.println("backMillorSolucio called with indexUbicacio: " + indexUbicacio);
-		printTable(taulellSol);
-
-		int indexItem = 0;
-
-		while (quedin_valors()) { // Recorregut de tot l’espai de cerca
-			System.out.println("Checking indexItem: " + indexItem);
+		while (quedin_valors()) {
 			if (indexItem < repte.getItemsSize()) {
-				if (acceptable(indexUbicacio, indexItem)) { // No viola les restriccions
-					System.out.println("Item " + indexItem + " is acceptable at indexUbicacio: " + indexUbicacio);
+				if (acceptable(indexUbicacio, indexItem)) {
 					anotarASolucio(indexUbicacio, indexItem);
-					System.out.println("Item " + indexItem + " anotated at indexUbicacio: " + indexUbicacio);
-					printTable(taulellSol);
-
 					if (esSolucio(0)) {
-						// Handle solution found
+						if(calcularFuncioObjectiu(this.taulellSol) > calcularFuncioObjectiu(this.taulellMillor))
+							guardarMillorSolucio();
 					} else if (completable()) {
-						System.out.println("Solution is completable, going deeper");
 						backMillorSolucio(indexUbicacio + 1);
 					}
 					desanotarDeSolucio(indexUbicacio, indexItem);
-					System.out.println("Item " + indexItem + " desanotated from indexUbicacio: " + indexUbicacio);
-					printTable(taulellSol);
-				} else {
-					System.out.println("Item " + indexItem + " is not acceptable at indexUbicacio: " + indexUbicacio);
 				}
 			} else {
-				System.out.println("Index out of bounds: indexUbicacio=" + indexUbicacio + ", indexItem=" + indexItem);
-				break; // Exit the loop if indexItem is out of bounds
+				break;
 			}
 			indexItem++;
 		}
-		System.out.println("Exiting backMillorSolucio with indexUbicacio: " + indexUbicacio);
 	}
 
-	private void printTable(char[][] table) {
-		for (char[] row : table) {
-			System.out.println(Arrays.toString(row));
-		}
-	}
 	private boolean quedin_valors() {
 		// minetras que alguna palabra marcada este false
 		// se podria ir haciendo el bucle
@@ -203,9 +108,6 @@ public class SolucioBacktracking {
 		}
 		return false;
 	}
-
-
-	private boolean paraulaUtilitzada(int indexItem) {return marcades[indexItem];}
 
 	private boolean acceptable(int indexUbicacio, int indexItem) {
 
@@ -228,7 +130,7 @@ public class SolucioBacktracking {
 				return esPotPosar(fila,col,llargada,'H',paraula);
 			}
 		}
-		return false; //TODO
+		return false;
 	}
 
 	//Mira si no hi ca cap altre lletra en la direcció donada
@@ -240,8 +142,7 @@ public class SolucioBacktracking {
 		switch (dir) {
 			case 'V':
 				for (int i = 0; (len-i)!=0 && espotposar; i++) {
-					if(taulellSol[fila+i][col] != ' '){
-						//char lletra = paraula[i];
+					if(taulellSol[fila+i][col] != ' ' && taulellSol[fila+i][col] != '▪'){
 						if(taulellSol[fila+i][col] != paraula[i])
 							espotposar = false;
 					}
@@ -249,7 +150,7 @@ public class SolucioBacktracking {
 				return espotposar;
 			default:
 				for (int j = 0; (len-j)!=0 && espotposar; j++) {
-					if (taulellSol[fila][col + j] != ' ') {
+					if (taulellSol[fila][col + j] != ' ' && taulellSol[fila][col+j] != '▪') {
 						if(taulellSol[fila][col+j] != paraula[j])
 							espotposar = false;
 					}
@@ -278,108 +179,69 @@ public class SolucioBacktracking {
 
 	private void desanotarDeSolucio(int indexUbicacio, int indexItem) {
 
-		PosicioInicial ubi = this.repte.getEspaisDisponibles().get(indexUbicacio);
-		char[] paraula = this.repte.getItem(indexItem);
-		int fila = ubi.getInitRow();
-		int col = ubi.getInitCol();
+        PosicioInicial ubi = this.repte.getEspaisDisponibles().get(indexUbicacio);
+        char[] paraula = this.repte.getItem(indexItem);
+        int fila = ubi.getInitRow();
+        int col = ubi.getInitCol();
 
-		for(int i = 0; i<paraula.length; i++) {
-			if(ubi.getDireccio() == 'V'){
-				if(taulellSol[fila+i][col] == paraula[i]){
-					if(esPotEliminar(ubi))
-						taulellSol[fila+i][col] = ' ';
-				}
-			}
-			else{
-				if(taulellSol[fila][col+i] == paraula[i]){
-					if(esPotEliminar(ubi))
-						taulellSol[fila][col+i] = ' ';
-				}
-			}
-		}
-
-		marcades[indexItem] = false;
-
-
-	}
-	//TODO EL QUE NO VA
-	/*
-	private boolean esPotEliminar(PosicioInicial ubi) {
-
-		boolean espot = false;
-
-		if(ubi.getDireccio()=='V') {
-
-			for(int i = 0; (ubi.getLength()-i)!=0; i++) {
-				int fila = ubi.getInitRow() + i;
-				if(ubi.getInitCol() - 1 > 0) {
-					if(taulellSol[fila][ubi.getInitCol() - 1 ] != ' ' && taulellSol[fila][ubi.getInitCol() - 1 ] != '▪') {
-						espot = false;
+        for(int i = 0; i<paraula.length; i++) {
+            if(ubi.getDireccio() == 'V'){
+                if(taulellSol[fila+i][col] == paraula[i]){
+                    if(esPotEliminar(ubi,i)) {
+						taulellSol[fila + i][col] = ' ';
 					}
-				} else if (ubi.getInitCol() + 1 < taulellSol[0].length) {
-					if(taulellSol[fila][ubi.getInitCol() + 1] != ' ' && taulellSol[fila][ubi.getInitCol() + 1] != '▪' ) {
-						espot = false;
-					}
-				} else {
-					espot = true;
-				}
-			}
-		} else {
-			for(int j = 0; (ubi.getLength()-j)!=0; j++) {
-				int col = ubi.getInitCol() + j;
-				if(ubi.getInitRow() - 1 > 0) {
-					if(taulellSol[ubi.getInitRow() - 1][col] != ' ' && taulellSol[ubi.getInitRow()-1][col] != '▪') {
-						espot = false;
-					}
-				} else if (ubi.getInitCol() + 1 < taulellSol[0].length) {
-					if(taulellSol[ubi.getInitRow() + 1][col] != ' ' && taulellSol[ubi.getInitRow() + 1][col] != '▪' ) {
-						espot = false;
-					}
-				} else
-					espot = true;
-			}
-		}
 
-		return espot;
+                }
+            }
+            else{
+                if(taulellSol[fila][col+i] == paraula[i]){
+                    if(esPotEliminar(ubi,i)){
+                        taulellSol[fila][col+i] = ' ';
+					}
+                }
+            }
+        }
 
-	}
-	*/
-	// TODO EL QUE VA
-	private boolean esPotEliminar(PosicioInicial ubi) {
-		boolean espot = true;
+        marcades[indexItem] = false;
+
+
+    }
+
+
+	private boolean esPotEliminar(PosicioInicial ubi,int count) {
 
 		if (ubi.getDireccio() == 'V') {
 			for (int i = 0; i < ubi.getLength(); i++) {
-				int fila = ubi.getInitRow() + i;
+				int fila = ubi.getInitRow() + count;
 				if (ubi.getInitCol() - 1 >= 0) {
 					if (taulellSol[fila][ubi.getInitCol() - 1] != ' ' && taulellSol[fila][ubi.getInitCol() - 1] != '▪') {
-						espot = false;
+						return false;
 					}
 				}
 				if (ubi.getInitCol() + 1 < taulellSol[0].length) {
 					if (taulellSol[fila][ubi.getInitCol() + 1] != ' ' && taulellSol[fila][ubi.getInitCol() + 1] != '▪') {
-						espot = false;
+						return false;
 					}
 				}
 			}
 		} else {
 			for (int j = 0; j < ubi.getLength(); j++) {
-				int col = ubi.getInitCol() + j;
+				int col = ubi.getInitCol() + count;
 				if (ubi.getInitRow() - 1 >= 0) {
 					if (taulellSol[ubi.getInitRow() - 1][col] != ' ' && taulellSol[ubi.getInitRow() - 1][col] != '▪') {
-						espot = false;
+						return false;
 					}
 				}
 				if (ubi.getInitRow() + 1 < taulellSol.length) {
 					if (taulellSol[ubi.getInitRow() + 1][col] != ' ' && taulellSol[ubi.getInitRow() + 1][col] != '▪') {
-						espot = false;
+						return false;
 					}
 				}
 			}
 		}
-
-		return espot;
+		return true;
 	}
+
 	private boolean esSolucio(int index) {
 		/*
 		És solució quan totes les ubicacions estiguin plenes i
