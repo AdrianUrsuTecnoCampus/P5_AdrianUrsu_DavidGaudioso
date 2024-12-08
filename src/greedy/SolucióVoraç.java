@@ -82,6 +82,8 @@ public class SolucióVoraç {
         return items;
     }
 
+    // Versio 2 esPotPosar és millor
+    /*
     private boolean esPotPosar(PosicioInicial pos, char[] p) {
 
         char dir = pos.getDireccio();
@@ -120,7 +122,33 @@ public class SolucióVoraç {
         }
         return true;
     }
+    */ //Versió 1 esPotPosar
 
+    private boolean esPotPosar(PosicioInicial pos, char[] p) {  //Versió 2
+        char dir = pos.getDireccio();
+        int fila = pos.getInitRow();
+        int col = pos.getInitCol();
+
+        switch (dir) {
+            case 'V':
+                for (int i = 0; i < p.length; i++) {
+                    if(fila + i > sol.length){return false;}
+                    if (sol[fila + i][col] != ' ' && sol[fila + i][col] != '▪' && sol[fila + i][col] != p[i]) {
+                        return false;
+                    }
+                }
+                break;
+            default:
+                for (int i = 0; i < p.length; i++) {
+                    if(col + i > sol[0].length){return false;}
+                    if (sol[fila][col + i] != ' ' && sol[fila][col + i] != '▪' && sol[fila][col + i] != p[i]) {
+                        return false;
+                    }
+                }
+                break;
+        }
+        return true;
+    }
     private boolean esSolucio() {
         for (int i = 0; i < sol.length; i++) {
             for (int j = 0; j < sol[i].length; j++) {
