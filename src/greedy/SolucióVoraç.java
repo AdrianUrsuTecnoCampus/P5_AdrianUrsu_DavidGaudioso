@@ -31,101 +31,47 @@ public class SolucióVoraç {
         // si voleu podeu modificar la capçalera d'aquest mètode
         // si voleu podeu utilitzar recursivita
 
-        /*
-        funció voraç (conjunt_candidats C ) retorna
-        conjunt_solució S
-            S= null
-            mentre (!solucio(S) && C!= null)
-                X=seleccio_candidat_optim
-                C=C-{X}
-                si factible(S,X)
-                    llavors S=SU{X}
-                fsi
-            fimentre
-            si solucio(S) retorna S
-            sino no hi ha solucio fsi
+        char[][] paraules = getItems();
 
-         */
-            PosicioInicial[] posicions = repte.getEspaisDisponibles().toArray(new PosicioInicial[0]);
-            char[][] paraules = getItems();
+        for (int k = 0; k < repte.getEspaisDisponibles().size(); k++) {
+            seleccionar(paraules, repte.getEspaisDisponibles().get(k));
 
-            for (PosicioInicial pos : posicions) {
-                for (int i = 0; i < repte.getItemsSize(); i++) {
-                    System.out.println("Trying to select word at position: " + pos + " AT I: "+i);
-                    seleccionar(paraules, pos);
-                }
-            }
-            return sol;
-
-
-    }
-
-    private void printTable(char[][] table) {
-        for (char[] row : table) {
-            System.out.println(Arrays.toString(row));
         }
+        return sol;
     }
-
-    /* A aquesta classe
-     * podeu definir els mètodes privats que vulgueu
-     */
 
     private void seleccionar(char[][] paraules, PosicioInicial pos){ //TODO
 
         if(!esSolucio()) {
             int row = pos.getInitRow();
             int col = pos.getInitCol();
-            //int length = pos.getLength();
             char direccioo = pos.getDireccio();
-            char[] p = laMillorParaula(paraules, pos);
-
-
-
+            char[] p = laMillorParaula(paraules, pos); //Miro la millor paraula que es pogui posar segons la PosicioInicial que li paso
 
             if (!Arrays.equals(p, new char[]{'0'})) { //Si ha agafat una paraula...
-                System.out.println("ESTEM POSANT LA PARAULA: "+ Arrays.toString(p).replace("[","").replace("]","").replace(",",""));
-
-                boolean noespot = false;
 
                 //Anotem segons la direcció
                 if(direccioo == 'V') {
-                    for (int j = 0; j < p.length && !noespot; j++) {
-                        if (esPotPosar(row+j,col,direccioo)) {
-                            sol[row+j][col] = p[j];
-                        } else
-                            noespot = true;
+                    for (int j = 0; j < p.length; j++) {
+                        sol[row + j][col] = p[j];
                     }
+
                 } else {
-                    for (int j = 0; j < p.length && !noespot; j++) {
-                        if (esPotPosar(row,col+j,direccioo)) {
-                            sol[row][col+j] = p[j];
-                        } else
-                            noespot = true;
+                    for (int j = 0; j < p.length; j++) {
+                        sol[row][col + j] = p[j];
                     }
-
                 }
 
-                //ELIMINEM LA PARAULA SI S'HA POSAT TODO
-                if(!noespot) {
-                    boolean trobat = false;
-                    for (int i = 0; i < paraules.length && !trobat; i++) {
-                        if (paraules[i] == p) {
-                            trobat = true;
-                            paraules[i][0] = ' ';
-                        }
+                //Eliminem el primer caràcter de la taula de paraules per a no contar-la després
+                boolean trobat = false;
+                for (int i = 0; i < paraules.length && !trobat; i++) {
+                    if (paraules[i] == p) {
+                        trobat = true;
+                        paraules[i][0] = ' ';
                     }
-
                 }
-
-
-
             }
         }
-        printTable(sol);
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        //return false;
     }
 
     private char[][] getItems() {
@@ -136,64 +82,44 @@ public class SolucióVoraç {
         return items;
     }
 
-    private boolean esPotPosar(int fila, int col, char dir) {
+    private boolean esPotPosar(PosicioInicial pos, char[] p) {
+
+        char dir = pos.getDireccio();
+        int fila = pos.getInitRow();
+        int col = pos.getInitCol();
 
         switch (dir) {
             case 'V':
-                System.out.println("Es vertical");
-                if(col+1 < sol[fila].length) {
-                    if (sol[fila][col + 1] != ' ' && sol[fila][col + 1] != '▪')
-                        return false;
-                }
-                if(col-1 >= 0) {
-                    if(sol[fila][col-1] != ' ' && sol[fila][col-1] != '▪')
-                        return false;
+                for(int i = 0;i<p.length;i++) {
+                    if (col + 1 < sol[fila].length) {
+                        if (sol[fila+i][col + 1] != ' ' && sol[fila+i][col + 1] != '▪')
+                            if(sol[fila+i][col] != p[i]) //Si coincideixen les lletres es pot posar de moment
+                                return false; //Si no no
+                    }
+                    if (col - 1 >= 0) {
+                        if (sol[fila+i][col - 1] != ' ' && sol[fila+i][col - 1] != '▪') //Si és una lletra
+                            if(sol[fila+i][col] != p[i]) //Si coincideixen les lletres es pot posar de moment
+                                return false; //Si no no
+                    }
                 }
                 break;
             default:
-                if(fila+1 < sol.length) {
-                    if (sol[fila + 1][col] != ' ' && sol[fila + 1][col] != '▪')
-                        return false;
-                }
-                if(fila-1 >= 0) {
-                    if(sol[fila-1][col] != ' ' && sol[fila-1][col] != '▪')
-                        return false;
-                }
 
-                break;
+                for(int i = 0;i<p.length;i++) {
+                    if (fila + 1 < sol.length) {
+                        if (sol[fila + 1][col + i] != ' ' && sol[fila+1][col +i] != '▪')
+                            if(sol[fila][col+i] != p[i]) //Si coincideixen les lletres es pot posar de moment
+                                return false; //Si no no
+                    }
+                    if (fila - 1 >= 0) {
+                        if (sol[fila - 1][col + i] != ' ' && sol[fila-1][col +i] != '▪') //Si és una lletra
+                            if(sol[fila][col+i] != p[i]) //Si coincideixen les lletres es pot posar de moment
+                                return false; //Si no no
+                    }
+                }
         }
         return true;
     }
-
-    /*
-    private boolean esPotPosar(int fila, int col, int len, char dir, char[] paraula) {
-    switch (dir) {
-        case 'H':
-            if (col + len > sol[0].length) return false; // Check horizontal bounds
-            for (int i = 0; i < len; i++) {
-                if (sol[fila][col + i] != ' ' && sol[fila][col + i] != '▪') {
-                    if (sol[fila][col + i] != paraula[i]) {
-                        return false;
-                    }
-                }
-            }
-            break;
-        case 'V':
-            if (fila + len > sol.length) return false; // Check vertical bounds
-            for (int i = 0; i < len; i++) {
-                if (sol[fila + i][col] != ' ' && sol[fila + i][col] != '▪') {
-                    if (sol[fila + i][col] != paraula[i]) {
-                        return false;
-                    }
-                }
-            }
-            break;
-        default:
-            return false;
-    }
-    return true;
-}
-     */
 
     private boolean esSolucio() {
         for (int i = 0; i < sol.length; i++) {
@@ -206,48 +132,22 @@ public class SolucióVoraç {
         return true;
     }
 
-
-
-    // Dóna la millor paraula segons la posició ( si n'hi ha )
+    // Dóna la millor paraula segons la posició ( si n'hi ha ) i si es pot posar o no
     private char[] laMillorParaula(char[][] paraules, PosicioInicial pos){
-
-        System.out.println("ENTREM AMB UNA POS = ROW: "+pos.getInitRow()+", COL: "+pos.getInitCol()+" LENGTH: "+pos.getLength());
-
-        System.out.println("Taula de paraules actual: ");
-        for (char[] paraule : paraules) {
-            System.out.println(Arrays.toString(paraule) + " length: "+paraule.length);
-        }
-        System.out.println("");
 
         char[] millor = {'0'};
         int capacitat = pos.getLength();
-        int cont = 0;
 
         //Mirem les paraules que hi poden caber dins de la posició
         for (int i = 0; i < paraules.length; i++) {
             char[] possible = paraules[i];
+            if(paraules[i].length == capacitat && paraules[i][0] != ' ') {
 
-            for (int j = 0; j < paraules[i].length; j++) {
-                if(paraules[i][j] != ' '){
-                    cont++;
-                } else
-                    j = paraules[i].length;
-
-                //Ja ha arribat a formar una paraula que hi pot caber dins de l'ubicació
-                System.out.println("MIREM SI HEM TROBAT UNA PARAULA AMB LA CAPACITAT CORRECTE AMB J = "+j);
-                System.out.println("COUNT = "+cont+", CAPACITAT = "+capacitat);//+", Y paraules[i].length-1 = "+(paraules[i].length-1));
-                if(cont == capacitat){ //&& capacitat == paraules[i].length-1){
-                    //System.out.println("COUNT = "+cont+", CAPACITAT = "+capacitat+", Y paraules[i].length-1 = "+(paraules[i].length-1));
-                    System.out.println("MIREM SI LA MILLOR QUE TENIM: "+ Arrays.toString(millor) +" ÉS MILLOR QUE LA CANDIDATA: "+ Arrays.toString(possible));
-
-                    //Mirem si és millor o no la possible candidata
-                    if(puntuacioParaula(millor)<puntuacioParaula(possible)){
-                        millor = possible;
-                    }
-
+                //Mirem si és millor o no la possible candidata i si es pot posar
+                if (puntuacioParaula(millor) < puntuacioParaula(possible) && esPotPosar(pos,possible)) {
+                    millor = possible;
                 }
             }
-            cont = 0;
         }
         return millor;
     }
@@ -261,8 +161,5 @@ public class SolucióVoraç {
 
         return total;
     }
-
-
-
 
 }
