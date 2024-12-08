@@ -207,7 +207,6 @@ public class SolucioBacktracking {
 
     }
 
-
 	private boolean esPotEliminar(PosicioInicial ubi,int count) {
 
 		if (ubi.getDireccio() == 'V') {

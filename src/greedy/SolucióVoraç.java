@@ -51,7 +51,7 @@ public class SolucióVoraç {
 
             for (PosicioInicial pos : posicions) {
                 for (int i = 0; i < repte.getItemsSize(); i++) {
-                    System.out.println("Trying to select word at position: " + pos);
+                    System.out.println("Trying to select word at position: " + pos + " AT I: "+i);
                     seleccionar(paraules, pos);
                 }
             }
@@ -75,32 +75,50 @@ public class SolucióVoraç {
         if(!esSolucio()) {
             int row = pos.getInitRow();
             int col = pos.getInitCol();
-            int length = pos.getLength();
+            //int length = pos.getLength();
             char direccioo = pos.getDireccio();
             char[] p = laMillorParaula(paraules, pos);
-            String a = "";
-            for(int i = 0; i < p.length; i++){
-                a = a + p[i];
-            }
-            System.out.println("ESTEM POSANT LA PARAULA: "+a);
+
+
+
 
             if (!Arrays.equals(p, new char[]{'0'})) { //Si ha agafat una paraula...
+                System.out.println("ESTEM POSANT LA PARAULA: "+ Arrays.toString(p).replace("[","").replace("]","").replace(",",""));
 
-                //Anotem
-                for (int i = 0; i < paraules.length; i++) {
-                    for (int j = 0; j < paraules[i].length; j++) {
+                boolean noespot = false;
 
-                        if (direccioo == 'V') row += i;
-                        else col += j;
-
-                        if (esPotPosar(row, col, length, direccioo, p)) { //Si es pot posar....
-                            sol[row][col] = p[i]; //La posem :)
-
-                        }
+                //Anotem segons la direcció
+                if(direccioo == 'V') {
+                    for (int j = 0; j < p.length && !noespot; j++) {
+                        if (esPotPosar(row+j,col,direccioo)) {
+                            sol[row+j][col] = p[j];
+                        } else
+                            noespot = true;
                     }
+                } else {
+                    for (int j = 0; j < p.length && !noespot; j++) {
+                        if (esPotPosar(row,col+j,direccioo)) {
+                            sol[row][col+j] = p[j];
+                        } else
+                            noespot = true;
+                    }
+
                 }
 
-                //return true;
+                //ELIMINEM LA PARAULA SI S'HA POSAT TODO
+                if(!noespot) {
+                    boolean trobat = false;
+                    for (int i = 0; i < paraules.length && !trobat; i++) {
+                        if (paraules[i] == p) {
+                            trobat = true;
+                            paraules[i][0] = ' ';
+                        }
+                    }
+
+                }
+
+
+
             }
         }
         printTable(sol);
@@ -118,30 +136,35 @@ public class SolucióVoraç {
         return items;
     }
 
-    private boolean esPotPosar(int fila, int col, int len, char dir, char[] paraula) {
+    private boolean esPotPosar(int fila, int col, char dir) {
 
         switch (dir) {
             case 'V':
-                for (int i = 0; len - i != 0; i++) {
-                    if(col+1 < sol.length && sol[fila+i][col+1] != ' ' && sol[fila+i][col+1] != '▪' && sol[fila+i][col+1] != paraula[i])
-                       return false;
-                    if(col-1 >= 0 && sol[fila+i][col-1] != ' ' && sol[fila+i][col-1] != '▪' && sol[fila+i][col-1] != paraula[i]) {
+                System.out.println("Es vertical");
+                if(col+1 < sol[fila].length) {
+                    if (sol[fila][col + 1] != ' ' && sol[fila][col + 1] != '▪')
                         return false;
-                    }
+                }
+                if(col-1 >= 0) {
+                    if(sol[fila][col-1] != ' ' && sol[fila][col-1] != '▪')
+                        return false;
                 }
                 break;
             default:
-                for (int j = 0; len - j != 0; j++) {
-                    if(fila+1 < sol.length && sol[fila+1][col+j] != ' ' && sol[fila+1][col+j] != '▪' && sol[fila+1][col+j] != paraula[j])
+                if(fila+1 < sol.length) {
+                    if (sol[fila + 1][col] != ' ' && sol[fila + 1][col] != '▪')
                         return false;
-                    if(fila-1 >= 0 && sol[fila-1][col+j] != ' ' && sol[fila-1][col+j] != '▪' && sol[fila-1][col+j] != paraula[j]) {
-                        return false;
-                    }
                 }
+                if(fila-1 >= 0) {
+                    if(sol[fila-1][col] != ' ' && sol[fila-1][col] != '▪')
+                        return false;
+                }
+
                 break;
         }
         return true;
     }
+
     /*
     private boolean esPotPosar(int fila, int col, int len, char dir, char[] paraula) {
     switch (dir) {
@@ -185,8 +208,16 @@ public class SolucióVoraç {
 
 
 
-
+    // Dóna la millor paraula segons la posició ( si n'hi ha )
     private char[] laMillorParaula(char[][] paraules, PosicioInicial pos){
+
+        System.out.println("ENTREM AMB UNA POS = ROW: "+pos.getInitRow()+", COL: "+pos.getInitCol()+" LENGTH: "+pos.getLength());
+
+        System.out.println("Taula de paraules actual: ");
+        for (char[] paraule : paraules) {
+            System.out.println(Arrays.toString(paraule) + " length: "+paraule.length);
+        }
+        System.out.println("");
 
         char[] millor = {'0'};
         int capacitat = pos.getLength();
@@ -195,6 +226,7 @@ public class SolucióVoraç {
         //Mirem les paraules que hi poden caber dins de la posició
         for (int i = 0; i < paraules.length; i++) {
             char[] possible = paraules[i];
+
             for (int j = 0; j < paraules[i].length; j++) {
                 if(paraules[i][j] != ' '){
                     cont++;
@@ -202,8 +234,10 @@ public class SolucióVoraç {
                     j = paraules[i].length;
 
                 //Ja ha arribat a formar una paraula que hi pot caber dins de l'ubicació
-                if(cont == capacitat){
-
+                System.out.println("MIREM SI HEM TROBAT UNA PARAULA AMB LA CAPACITAT CORRECTE AMB J = "+j);
+                System.out.println("COUNT = "+cont+", CAPACITAT = "+capacitat);//+", Y paraules[i].length-1 = "+(paraules[i].length-1));
+                if(cont == capacitat){ //&& capacitat == paraules[i].length-1){
+                    //System.out.println("COUNT = "+cont+", CAPACITAT = "+capacitat+", Y paraules[i].length-1 = "+(paraules[i].length-1));
                     System.out.println("MIREM SI LA MILLOR QUE TENIM: "+ Arrays.toString(millor) +" ÉS MILLOR QUE LA CANDIDATA: "+ Arrays.toString(possible));
 
                     //Mirem si és millor o no la possible candidata
